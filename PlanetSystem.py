@@ -22,47 +22,64 @@ clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((screen_xsize, screen_ysize))
 
-mercury_radius = 35
-mercury_xpos = 35
+mercury_radius = 80
+mercury_xpos = 80
 mercury_ypos = 1
 mercury_ypositive = True
 
-venus_radius = 65
-venus_xpos = 65
+venus_radius = 170
+venus_xpos = 170
 venus_ypos = 1
 venus_ypositive = True
 
-earth_radius = 95
-earth_xpos = 95
+earth_radius = 240
+earth_xpos = 240
 earth_ypos = 1
 earth_ypositive = True
 
-mars_radius = 125
-mars_xpos = 125
+mars_radius = 350
+mars_xpos = 350
 mars_ypos = 1
 mars_ypositive = True
+
+moon_radius = 25
+moon_xpos = 265
+moon_ypos = 1
+moon_ypositive = True
+
+
+def moonmove(rad, xpos, ypos, centerx, centery, ypositive):
+    if ypositive:
+        xpos += 1
+    else:
+        xpos -= 1
+
+    ypos = (((rad ** 2) - ((xpos - centerx) ** 2 )) ** (1/2)) + centery
+    return xpos, ypos
 
 
 def planetmove(rad, xpos, ypos, ypositive):
     nearend = rad - abs(xpos)
 
-    '''if nearend <= 2 and ypositive:
-        ypos -= 2
-        if abs(ypos - ((rad **2) - (xpos **2)) ** (1/2)) <= 5:
-            xpos -= 1
-    elif nearend <= 2 and ypositive is False:
-        ypos += 3
-        if abs(ypos - ((rad **2) - (xpos **2)) ** (1/2)) <= 5:
-            xpos += 1'''
-    if ypositive:
+    if nearend <= 4 and ypositive:
+        xpos -= 0.4
+    elif nearend <= 4 and ypositive is False:
+        xpos += 0.4
+    elif ypositive:
         xpos -= 1
-        ypos = ((rad ** 2) - (xpos ** 2)) ** (1 / 2)
     else:
         xpos += 1
-        ypos = ((rad ** 2) - (xpos ** 2)) ** (1 / 2)
+
+    if xpos >= rad:
+        xpos = rad
+    elif xpos <= -rad:
+        xpos = -rad
+
+    ypos = ((rad ** 2) - (xpos ** 2)) ** (1 / 2)
+
     if ypositive is False:
         ypos = -1 * ypos
-    return int(xpos), int(ypos)
+    return xpos, ypos
 
 
 while True:
@@ -109,15 +126,26 @@ while True:
     mars_xpos = mars_pos[0]
     mars_ypos = mars_pos[1]
 
+    if moon_ypos == 0:
+        if moon_ypositive:
+            moon_ypositive = False
+        elif moon_ypositive is False:
+            moon_ypositive = True
+    moon_pos = moonmove(moon_radius, moon_xpos, moon_ypos, earth_xpos, earth_ypos, moon_ypositive)
+    moon_xpos = moon_pos[0]
+    moon_ypos = moon_pos[1]
+
     # Sun
-    pygame.draw.circle(screen, yellow, center, 20)
+    pygame.draw.circle(screen, yellow, center, 40)
     # Mercury
-    pygame.draw.circle(screen, lightgray, ((screen_xsize//2) + mercury_xpos, (screen_ysize//2) - mercury_ypos), 2)
+    pygame.draw.circle(screen, lightgray, ((screen_xsize//2) + int(mercury_xpos), (screen_ysize//2) - int(mercury_ypos)), 4)
     # Venus
-    pygame.draw.circle(screen, lightyellow, ((screen_xsize//2) + venus_xpos, (screen_ysize//2) - venus_ypos), 6)
+    pygame.draw.circle(screen, lightyellow, ((screen_xsize//2) + int(venus_xpos), (screen_ysize//2) - int(venus_ypos)), 12)
     # Earth
-    pygame.draw.circle(screen, blue, ((screen_xsize//2) + earth_xpos, (screen_ysize//2) - earth_ypos), 8)
+    pygame.draw.circle(screen, blue, ((screen_xsize//2) + int(earth_xpos), (screen_ysize//2) - int(earth_ypos)), 16)
     # Mars
-    pygame.draw.circle(screen, red, ((screen_xsize//2) + mars_xpos, (screen_ysize//2) - mars_ypos), 5)
+    pygame.draw.circle(screen, red, ((screen_xsize//2) + int(mars_xpos), (screen_ysize//2) - int(mars_ypos)), 10)
+    # Moon
+    pygame.draw.circle(screen, lightgray, ((screen_xsize//2) + int(moon_xpos), (screen_ysize//2) - int(moon_ypos)), 3)
     pygame.display.flip()
     pass
