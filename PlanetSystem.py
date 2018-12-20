@@ -49,12 +49,13 @@ moon_ypositive = True
 
 
 def moonmove(rad, xpos, ypos, centerx, centery, ypositive):
+    print(xpos, centerx)
     if ypositive:
         xpos += 1
     else:
         xpos -= 1
 
-    ypos = (((rad ** 2) - ((xpos - centerx) ** 2 )) ** (1/2)) + centery
+    ypos = (abs(((rad ** 2) - ((xpos - centerx) ** 2))) ** (1/2)) + centery
     return xpos, ypos
 
 
@@ -126,7 +127,7 @@ while True:
     mars_xpos = mars_pos[0]
     mars_ypos = mars_pos[1]
 
-    if moon_ypos == 0:
+    if int(moon_ypos) == int(earth_ypos):
         if moon_ypositive:
             moon_ypositive = False
         elif moon_ypositive is False:
@@ -146,6 +147,7 @@ while True:
     # Mars
     pygame.draw.circle(screen, red, ((screen_xsize//2) + int(mars_xpos), (screen_ysize//2) - int(mars_ypos)), 10)
     # Moon
+    print(moon_pos)
     pygame.draw.circle(screen, lightgray, ((screen_xsize//2) + int(moon_xpos), (screen_ysize//2) - int(moon_ypos)), 3)
     pygame.display.flip()
     pass
