@@ -1,7 +1,7 @@
 """2D simulated solar system using Pygame.
 """
 
-import pygame, sys
+import pygame, sys, math
 
 
 pygame.init()
@@ -39,24 +39,13 @@ earth_ypositive = True
 
 mars_radius = 350
 mars_xpos = 350
-mars_ypos = 1
-mars_ypositive = True
+mars_ypos = 0
+mars_degree = 0
 
 moon_radius = 25
-moon_xpos = 265
+moon_xpos = 25
 moon_ypos = 1
 moon_ypositive = True
-
-
-def moonmove(rad, xpos, ypos, centerx, centery, ypositive):
-    print(xpos, centerx)
-    if ypositive:
-        xpos += 1
-    else:
-        xpos -= 1
-
-    ypos = (abs(((rad ** 2) - ((xpos - centerx) ** 2))) ** (1/2)) + centery
-    return xpos, ypos
 
 
 def planetmove(rad, xpos, ypos, ypositive):
@@ -81,6 +70,12 @@ def planetmove(rad, xpos, ypos, ypositive):
     if ypositive is False:
         ypos = -1 * ypos
     return xpos, ypos
+
+def degreemove(angle, radius):
+    angle += 1
+    xpos = math.cos(math.radians(angle)) * radius
+    ypos = math.sin(math.radians(angle)) * radius
+    return angle, xpos, ypos
 
 
 while True:
@@ -118,7 +113,7 @@ while True:
     earth_xpos = earth_pos[0]
     earth_ypos = earth_pos[1]
 
-    if mars_ypos == 0:
+    '''if mars_ypos == 0:
         if mars_ypositive:
             mars_ypositive = False
         elif mars_ypositive is False:
@@ -126,13 +121,19 @@ while True:
     mars_pos = planetmove(mars_radius, mars_xpos, mars_ypos, mars_ypositive)
     mars_xpos = mars_pos[0]
     mars_ypos = mars_pos[1]
+    '''
 
-    if int(moon_ypos) == int(earth_ypos):
+    mars_pos = degreemove(mars_degree, mars_radius)
+    mars_degree = mars_pos[0]
+    mars_xpos = mars_pos[1]
+    mars_ypos = mars_pos[2]
+
+    if int(moon_ypos) == 0:
         if moon_ypositive:
             moon_ypositive = False
         elif moon_ypositive is False:
             moon_ypositive = True
-    moon_pos = moonmove(moon_radius, moon_xpos, moon_ypos, earth_xpos, earth_ypos, moon_ypositive)
+    moon_pos = planetmove(moon_radius, moon_xpos, moon_ypos, moon_ypositive)
     moon_xpos = moon_pos[0]
     moon_ypos = moon_pos[1]
 
@@ -147,7 +148,6 @@ while True:
     # Mars
     pygame.draw.circle(screen, red, ((screen_xsize//2) + int(mars_xpos), (screen_ysize//2) - int(mars_ypos)), 10)
     # Moon
-    print(moon_pos)
-    pygame.draw.circle(screen, lightgray, ((screen_xsize//2) + int(moon_xpos), (screen_ysize//2) - int(moon_ypos)), 3)
+    pygame.draw.circle(screen, lightgray, ((screen_xsize//2) + int(moon_xpos) + int(earth_xpos), (screen_ysize//2) - int(moon_ypos) - int(earth_ypos)), 3)
     pygame.display.flip()
     pass
