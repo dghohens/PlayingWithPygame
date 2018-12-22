@@ -2,6 +2,7 @@
 """
 
 import pygame, sys, math
+from pygame.locals import *
 
 pygame.init()
 
@@ -22,11 +23,37 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((screen_xsize, screen_ysize))
 pygame.display.set_caption('Archery')
 
+
+class Arrow(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((50, 10))
+        self.image.set_colorkey(red)
+        self.image.fill(red)
+        self.rect = self.image.get_rect()
+        pygame.draw.lines(self.image, black, False, [(1, 4), (49, 4), (49, 4), (45, 2), (49, 4), (45, 6)], 2)
+        pygame.draw.lines(self.image, black, False, [(15, 4), (11, 1), (15, 5), (11, 8)])
+        pygame.draw.lines(self.image, black, False, [(10, 4), (6, 1), (10, 5), (6, 8)])
+        pygame.draw.lines(self.image, black, False, [(5, 4), (1, 1), (5, 5), (1, 8)])
+
+
+all_sprites = pygame.sprite.Group()
+arrow = Arrow()
+all_sprites.add(arrow)
+
+arrow.rect.x = 78
+arrow.rect.y = 733
+
+arrow_shoot = False
+
 while True:
     clock.tick(30)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        if event.type == KEYDOWN:
+            if event.key == K_SPACE:
+                arrow_shoot = True
 
     screen.fill(skyblue)
     # Draw grass
@@ -42,5 +69,15 @@ while True:
                        (70, screen_ysize - 160), (105, screen_ysize - 160)]
                       , 3)
     pygame.draw.circle(screen, black, (70, screen_ysize - 180), 10)
-    #pygame.draw.arc(screen, black, )
+    # Draw bow
+    pygame.draw.arc(screen, black, (66, screen_ysize - 210, 45, 110), -1.6, 1.6, 3)
+    pygame.draw.line(screen, black, (86, screen_ysize - 210), (86, screen_ysize - 100))
+
+    # Shoot arrow
+    if arrow.rect.right < 1180 and arrow_shoot:
+        arrow.rect.x += 6
+
+    all_sprites.update()
+    all_sprites.draw(screen)
+
     pygame.display.flip()
