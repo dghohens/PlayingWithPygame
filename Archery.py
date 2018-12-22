@@ -35,4 +35,12 @@ while True:
     pygame.draw.ellipse(screen, red, ((screen_xsize * 0.8), (screen_ysize - (screen_ysize * 0.1)) - 100, 50, 100))
     pygame.draw.ellipse(screen, white, ((screen_xsize * 0.8) + 5, (screen_ysize - (screen_ysize * 0.1)) - 95, 40, 90), 5)
     pygame.draw.ellipse(screen, white, ((screen_xsize * 0.8) + 16, (screen_ysize - (screen_ysize * 0.1)) - 80, 18, 60), 5)
+    # Draw legs, torso, head and left arm of archer
+    pygame.draw.lines(screen, black, False,
+                      [(50, screen_ysize - 90), (70, screen_ysize - 120), (90, screen_ysize - 90), (70, screen_ysize - 120),
+                      (70, screen_ysize - 120), (70, screen_ysize - 180),
+                       (70, screen_ysize - 160), (105, screen_ysize - 160)]
+                      , 3)
+    pygame.draw.circle(screen, black, (70, screen_ysize - 180), 10)
+    #pygame.draw.arc(screen, black, )
     pygame.display.flip()
