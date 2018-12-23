@@ -27,14 +27,21 @@ pygame.display.set_caption('Archery')
 class Arrow(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50, 10))
-        self.image.set_colorkey(red)
-        self.image.fill(red)
+        self.image = pygame.image.load('arrow.png')
+        #self.image.set_colorkey(red)
+        #self.image.fill(red)
         self.rect = self.image.get_rect()
-        pygame.draw.lines(self.image, black, False, [(1, 4), (49, 4), (49, 4), (45, 2), (49, 4), (45, 6)], 2)
+        '''pygame.draw.lines(self.image, black, False, [(1, 4), (49, 4), (49, 4), (45, 2), (49, 4), (45, 6)], 2)
         pygame.draw.lines(self.image, black, False, [(15, 4), (11, 1), (15, 5), (11, 8)])
         pygame.draw.lines(self.image, black, False, [(10, 4), (6, 1), (10, 5), (6, 8)])
         pygame.draw.lines(self.image, black, False, [(5, 4), (1, 1), (5, 5), (1, 8)])
+        '''
+
+    def rotate(self):
+        rot = pygame.transform.rotate
+        self.image = rot(self.image, 2)
+        self.rect = self.image.get_rect()
+
 
 
 all_sprites = pygame.sprite.Group()
@@ -76,6 +83,7 @@ while True:
     # Shoot arrow
     if arrow.rect.right < 1180 and arrow_shoot:
         arrow.rect.x += 6
+        arrow.rotate()
 
     all_sprites.update()
     all_sprites.draw(screen)
