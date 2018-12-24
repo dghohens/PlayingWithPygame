@@ -28,39 +28,49 @@ class Arrow(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('arrow.png')
-        #self.image.set_colorkey(red)
-        #self.image.fill(red)
         self.rect = self.image.get_rect()
-        '''pygame.draw.lines(self.image, black, False, [(1, 4), (49, 4), (49, 4), (45, 2), (49, 4), (45, 6)], 2)
-        pygame.draw.lines(self.image, black, False, [(15, 4), (11, 1), (15, 5), (11, 8)])
-        pygame.draw.lines(self.image, black, False, [(10, 4), (6, 1), (10, 5), (6, 8)])
-        pygame.draw.lines(self.image, black, False, [(5, 4), (1, 1), (5, 5), (1, 8)])
-        '''
+        self.angle = 12
+        self.original_image = pygame.image.load('arrow.png')
+        self.rect.x = 78
+        self.rect.y = 733
+        self.image = pygame.transform.rotate(self.original_image, 12)
 
     def rotate(self):
         rot = pygame.transform.rotate
-        self.image = rot(self.image, 2)
-        self.rect = self.image.get_rect()
-
-
+        self.rect.x += 20
+        self.image = rot(self.original_image, self.angle)
+        #self.rect.x = 78
+        #self.rect.y = 733
+        self.angle += -.5 % 360
+        #self.rect = self.image.get_rect()
+        self.rect.y = (0.0005 * ((self.rect.x - 600) ** 2)) + 600
 
 all_sprites = pygame.sprite.Group()
 arrow = Arrow()
 all_sprites.add(arrow)
 
-arrow.rect.x = 78
-arrow.rect.y = 733
 
 arrow_shoot = False
 
 while True:
     clock.tick(30)
+    print(arrow.rect.x, arrow.rect.y)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         if event.type == KEYDOWN:
             if event.key == K_SPACE:
                 arrow_shoot = True
+            if event.key == K_RETURN:
+                arrow.angle = 11
+                arrow.rect.x = 78
+                arrow.rect.y == 733
+                arrow.image = pygame.transform.rotate(arrow.original_image, arrow.angle)
+                arrow_shoot = False
+                all_sprites.update()
+                all_sprites.draw(screen)
+
+
 
     screen.fill(skyblue)
     # Draw grass
@@ -82,7 +92,6 @@ while True:
 
     # Shoot arrow
     if arrow.rect.right < 1180 and arrow_shoot:
-        arrow.rect.x += 6
         arrow.rotate()
 
     all_sprites.update()
