@@ -34,16 +34,17 @@ class Arrow(pygame.sprite.Sprite):
         self.rect.x = 78
         self.rect.y = 733
         self.image = pygame.transform.rotate(self.original_image, 12)
+        self.const = 0.0005
 
     def rotate(self):
         rot = pygame.transform.rotate
-        self.rect.x += 20
+        self.rect.x += 10
         self.image = rot(self.original_image, self.angle)
         #self.rect.x = 78
         #self.rect.y = 733
-        self.angle += -.5 % 360
+        self.angle += -.25 % 360
         #self.rect = self.image.get_rect()
-        self.rect.y = (0.0005 * ((self.rect.x - 600) ** 2)) + 600
+        self.rect.y = (self.const * ((self.rect.x - 600) ** 2)) + 600
 
 all_sprites = pygame.sprite.Group()
 arrow = Arrow()
@@ -53,7 +54,7 @@ all_sprites.add(arrow)
 arrow_shoot = False
 
 while True:
-    clock.tick(30)
+    clock.tick(60)
     print(arrow.rect.x, arrow.rect.y)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -69,8 +70,12 @@ while True:
                 arrow_shoot = False
                 all_sprites.update()
                 all_sprites.draw(screen)
-
-
+            if event.key == K_UP:
+                arrow.const += 0.00001
+            if event.key == K_DOWN:
+                arrow.const -= 0.00001
+            if event.key == K_ESCAPE:
+                sys.exit()
 
     screen.fill(skyblue)
     # Draw grass
@@ -90,8 +95,12 @@ while True:
     pygame.draw.arc(screen, black, (66, screen_ysize - 210, 45, 110), -1.6, 1.6, 3)
     pygame.draw.line(screen, black, (86, screen_ysize - 210), (86, screen_ysize - 100))
 
+    font = pygame.font.SysFont('arial', 12)
+    text = font.render(str(arrow.const), True, black)
+    screen.blit(text, (0,0))
+
     # Shoot arrow
-    if arrow.rect.right < 1180 and arrow_shoot:
+    if arrow.rect.right < 1170 and arrow_shoot:
         arrow.rotate()
 
     all_sprites.update()

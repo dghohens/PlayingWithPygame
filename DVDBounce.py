@@ -15,7 +15,7 @@ screen = pygame.display.set_mode((screenx, screeny))
 pygame.display.set_caption('DVD Bounce Screensaver')
 clock = pygame.time.Clock()
 
-black = 0, 0, 0
+black = 0, 0, 0font = pygame.font.SysFont(i, 96
 r = 127
 g = 127
 b = 127
